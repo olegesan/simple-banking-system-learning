@@ -25,12 +25,13 @@ public class AccountController {
     public void login(){
         System.out.println("Enter your card number:");
         String cardNumber = getUserInput();
-        System.out.println("Enter your PIN:");
-        String pin = getUserInput();
-        if(card.validatePin(cardNumber, pin)){
-            setState("Account Menu");
-            gui.displaySuccessfulLogin();
-        }
+            System.out.println("Enter your PIN:");
+            String pin = getUserInput();
+            if(card.validatePin(cardNumber, pin)){
+                setState("Account Menu");
+                gui.displaySuccessfulLogin();
+                return;
+            }
         gui.displayFailedLogin();
 
     }
