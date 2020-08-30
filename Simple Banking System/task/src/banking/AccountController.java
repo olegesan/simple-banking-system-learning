@@ -1,5 +1,6 @@
 package banking;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -9,8 +10,10 @@ public class AccountController {
     private ArrayList<String> actions;
     private AccountInterface gui;
     private String state;
-    public AccountController(){
+    private DBController dbController;
+    public AccountController(String[] args){
         gui = new AccountInterface();
+        dbController = new DBController(getDBName(args));
         setState("Main Menu");
 
         while(true){
@@ -21,16 +24,28 @@ public class AccountController {
             }
         }
     }
-
+    public String getDBName(String[] args){
+        for(int i = 0; i < args.length-1; i++){
+            if(args[i].equals("-fileName")){
+                return args[i+1];
+            }
+        }
+        return "";
+    }
     public void login(){
         System.out.println("Enter your card number:");
         String cardNumber = getUserInput();
             System.out.println("Enter your PIN:");
             String pin = getUserInput();
-            if(card.validatePin(cardNumber, pin)){
-                setState("Account Menu");
-                gui.displaySuccessfulLogin();
-                return;
+            if(card.isValidCardNumber(cardNumber)){
+                String cardStringArr[] = dbController.getCardInfo(cardNumber);
+                if(cardStringArr[1].equals(pin)){
+                    Card card = new Card(cardStringArr[0], cardStringArr[1], cardStringArr[2]);
+                    setCard(card);
+                    setState("Account Menu");
+                    gui.displaySuccessfulLogin();
+                    return;
+                }
             }
         gui.displayFailedLogin();
 
@@ -90,11 +105,17 @@ public class AccountController {
         }
     }
     public void displayBalance(){
+
         gui.displayBalance(card);
     }
     public void createAccount(){
-        Card card = new Card();
-        setCard(card);
+        while(true){
+            Card card = new Card();
+            setCard(card);
+            if(dbController.insertCard(card.getCardNumber(),card.getPin())){
+                break;
+            }
+        }
         gui.displayNewCard(card);
     }
 

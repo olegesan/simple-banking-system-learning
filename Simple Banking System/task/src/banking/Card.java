@@ -12,6 +12,11 @@ public class Card {
         setCardNumber(generateCardNumber());
         setPin(generatePin());
     }
+    public Card(String cardNumber, String pin, String balance){
+        this.cardNumber = cardNumber;
+        this.pin = pin;
+        this.balance = Integer.valueOf(balance);added
+    }
 
     public int getBalance() {
         return balance;
@@ -73,8 +78,8 @@ public class Card {
     public void setPin(String pin) {
         this.pin = pin;
     }
-    public boolean validatePin(String cardNumber, String pin){
-        if(cardNumber.equals(getCardNumber()) && pin.equals(getPin()) ){
+    public boolean validateCard(String cardNumber){
+        if(isValidCardNumber(cardNumber)){
             return true;
         }else{
             return false;

@@ -1,8 +1,11 @@
 package banking;
 
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
-        AccountController ac = new AccountController();
+
+        AccountController ac = new AccountController(args);
 
 //        testing card number checksum
 //        Card card = new Card();
