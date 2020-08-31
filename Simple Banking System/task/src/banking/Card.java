@@ -15,7 +15,7 @@ public class Card {
     public Card(String cardNumber, String pin, String balance){
         this.cardNumber = cardNumber;
         this.pin = pin;
-        this.balance = Integer.valueOf(balance);added
+        this.balance = Integer.valueOf(balance);
     }
 
     public int getBalance() {

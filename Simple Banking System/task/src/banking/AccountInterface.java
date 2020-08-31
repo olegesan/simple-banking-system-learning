@@ -39,4 +39,14 @@ public class AccountInterface {
         System.out.println();
         System.out.println("Wrong card number or PIN!");
     }
+
+    public void displaySuccessfulIncomeAdd(){
+        System.out.println("Income was added!");
+    }
+    public void displayWrongCardNumErr(){
+        System.out.println("Probably you made mistake in the card number. Please try again!");
+    }
+    public void noSuchCardError(){
+        System.out.println("Such a card does not exist.");
+    }
 }

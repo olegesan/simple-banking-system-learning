@@ -103,5 +103,36 @@ public class DBController {
         }
         return new String[] {"error"};
     }
+    public boolean closeAccount(String cardNumber){
+        String sql = "DELETE FROM card WHERE number = ?";
+        try(Connection con = this.connectToDB();
+        PreparedStatement prst = con.prepareStatement(sql)){
+            prst.setString(1,cardNumber);
+            prst.executeUpdate();
+            return true;
+        }catch(SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public boolean transfer(String cardNumberOrg, int amount, String cardNumberDest){
+        updateBalance(cardNumberDest, amount);
+        updateBalance(cardNumberOrg, -amount);
+        return true;
+    }
+    public boolean updateBalance(String cardNumber, int value){
+        String sql = "UPDATE card SET balance = balance + ? WHERE number = ?;";
+        try(Connection con = this.connectToDB();
+        PreparedStatement prst = con.prepareStatement(sql);){
+            prst.setInt(1, value);
+            prst.setString(2, cardNumber);
+            prst.executeUpdate();
+            return true;
+        }catch(SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
 
 }

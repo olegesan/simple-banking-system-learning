@@ -32,6 +32,62 @@ public class AccountController {
         }
         return "";
     }
+    public void addIncome(){
+        System.out.println("Enter income:");
+        String input = getUserInput();
+        int value = 0;
+        while(true){
+            try{
+                value = Integer.valueOf(input);
+                break;
+            }catch(NumberFormatException e){
+                System.out.println(e);
+                return;
+            }
+        }
+        boolean resultAdd = dbController.updateBalance(card.getCardNumber(), value);
+
+        if(resultAdd){
+            card.setBalance(card.getBalance()+value);
+            gui.displaySuccessfulIncomeAdd();
+        }
+
+    }
+    public void closeAccount(){
+        boolean status = dbController.closeAccount(card.getCardNumber());
+        if(status){
+            System.out.println("The account has been closed!");
+            setState("Main Menu");
+            return;
+        }
+    }
+    public void transfer(){
+        System.out.println("Transfer");
+        System.out.println("Enter card number:");
+        String cardNumber = getUserInput();
+        if(!Card.isValidCardNumber(cardNumber)){
+            gui.displayWrongCardNumErr();
+            return;
+        }
+        if(dbController.getCardInfo(cardNumber)[0].equals("error")) {
+            gui.noSuchCardError();
+            return;
+        }
+        System.out.println("Enter how much money you want to transfer:");
+        String amountStr = getUserInput();
+        int amount = 0;
+        try{
+            amount = Integer.valueOf(amountStr);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        if(card.getBalance()-amount < 0){
+            System.out.println("Not enough money!");
+        }
+        dbController.transfer(card.getCardNumber(), amount, cardNumber);
+        card.setBalance(card.getBalance()-amount);
+        System.out.println("Success!");
+    }
     public void login(){
         System.out.println("Enter your card number:");
         String cardNumber = getUserInput();
@@ -71,7 +127,14 @@ public class AccountController {
 
     }
     private ArrayList<String> getStateAvailableActions(String state){
-        ArrayList<String> allActions = new ArrayList<>(Arrays.asList("Exit", "Create an account", "Log out", "Log into account", "Balance"));
+        ArrayList<String> allActions = new ArrayList<>(Arrays.asList("Exit",
+                "Create an account",
+                "Log out",
+                "Log into account",
+                "Balance",
+                "Add income",
+                "Close account",
+                "Do transfer"));
         switch(state){
             case "Main Menu":
                 return new ArrayList<> (Arrays.asList(allActions.get(1),
@@ -79,6 +142,9 @@ public class AccountController {
                         allActions.get(0)));
             case "Account Menu":
                 return new ArrayList<> (Arrays.asList(allActions.get(4),
+                        allActions.get(5),
+                        allActions.get(7),
+                        allActions.get(6),
                         allActions.get(2),
                         allActions.get(0)));
         }
@@ -101,6 +167,15 @@ public class AccountController {
                 break;
             case "Balance":
                 displayBalance();
+                break;
+            case "Add income":
+                addIncome();
+                break;
+            case "Do transfer":
+                transfer();
+                break;
+            case "Close account":
+                closeAccount();
                 break;
         }
     }
